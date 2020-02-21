@@ -5,6 +5,8 @@ class LinksSpider(scrapy.Spider):
     start_urls = [
         'https://tribune.com.pk/pakistan',
         'https://dawn.com/pakistan',
+        'https://techcrunch.com',
+        'https://cnet.com/news/'
     ]
 
     def parse(self, response):
@@ -26,4 +28,23 @@ class LinksSpider(scrapy.Spider):
                 "website":website_name.split("www.")[1],
                 "links" : links
             })
+
+        elif(website_name == 'techcrunch'):
+            targets = response.css('.post-block__header .post-block__title a')
+            links = targets.xpath("@href").extract()[:2]
+            final.append({
+                "website":website_name,
+                "links" : links
+            })
+
+        elif(website_name == 'www.cnet'):
+            targets = response.css('.col-4 .assetWrap .assetBody a')
+            links = targets.xpath("@href").extract()[:2]
+
+            links = ['https://cnet.com{0}'.format(element) for element in links]
+            final.append({
+                "website":website_name.split("www.")[1],
+                "links" : links
+            })
+
         yield final[0] 
