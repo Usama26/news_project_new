@@ -1,4 +1,5 @@
 import scrapy
+import pyrebase
 
 class LinksSpider(scrapy.Spider):
     name = "links"
@@ -8,11 +9,18 @@ class LinksSpider(scrapy.Spider):
         'https://techcrunch.com',
         'https://cnet.com/news/'
     ]
+    config = {
+        "apiKey": "AIzaSyCVFCM6jxRgmfZyuVepfWVFIRd1i3GZctk",
+        "authDomain": "newsproject-19880.firebaseapp.com",
+        "databaseURL": "https://newsproject-19880.firebaseio.com",
+        "storageBucket": "newsproject-19880.appspot.com"
+    }
 
     def parse(self, response):
         final = []
         website_name = response.url.split("https://")[1].split(".com")[0]
         
+        print("AAA",self.config)
         if(website_name == 'tribune'):
             targets = response.css('.cat-1.group-0 .title a')
             links = targets.xpath("@href").extract()[:2]
